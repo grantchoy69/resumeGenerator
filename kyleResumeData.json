@@ -1,0 +1,173 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "personalInfo": {
+    "fullName": "Kyle Amundson",
+    "location": "San Diego, CA",
+    "email": "kyleaamundson@gmail.com",
+    "phone": "(702) 354-1934",
+    "linkedin": "https://linkedin.com/in/kyleamundson",
+    "customFooterNote": ""
+  },
+
+  "headlines": [
+    {
+      "text": "Senior CRM & Lifecycle Marketing Leader | Email & SMS Strategy | Customer Retention",
+      "version": "base",
+      "tags": ["senior", "crm", "lifecycle"]
+    },
+    {
+      "text": "Senior CRM Marketing Leader | Revenue Growth | Team Leadership | Retention Expert",
+      "version": "template",
+      "tags": ["leadership", "revenue"]
+    }
+  ],
+
+  "professionalSummaries": [
+    {
+      "text": "Senior CRM marketing leader with 8+ years of experience driving revenue, customer retention, and engagement across e-commerce, subscription, and multi-channel consumer brands. Proven track record of managing large-scale CRM programs, advanced segmentation, cross-channel orchestration (email, SMS, push, in-app messaging), and leading high-performing teams. Adept at leveraging data, analytics, and marketing technology to deliver measurable improvements in conversion, loyalty, and customer lifetime value.",
+      "version": "base",
+      "length": "medium",
+      "tags": ["core", "senior"]
+    }
+  ],
+
+  "keyAccomplishments": [
+    {
+      "id": "sms-expansion-2024",
+      "text": "Led aggressive SMS channel expansion (+44% YTD opt-ins) and shifted SMS to 37% of total CRM revenue (+42% YoY) by focusing on early-lifecycle engagement",
+      "metric": "+44% YTD opt-ins, +42% YoY revenue",
+      "linkedToRole": "Hanna Andersson Senior Manager, CRM",
+      "tags": ["sms", "revenue", "growth", "lifecycle"],
+      "version": "base"
+    },
+    {
+      "id": "crm-revenue-62",
+      "text": "Owned full CRM & retention programs that drove 62% of total company revenue at a DTC subscription brand through behavior-driven repeat purchase initiatives and personalized lifecycle journeys",
+      "metric": "62% of total revenue",
+      "linkedToRole": "CURATEUR Senior Email Marketing Manager",
+      "tags": ["revenue", "retention", "lifecycle", "dtc"],
+      "version": "base"
+    },
+    {
+      "id": "churn-reduction-12",
+      "text": "Reduced churn by 12% and improved LTV through data-driven cohort analysis, targeted customer journeys, and personalized retention strategies across high-value segments",
+      "metric": "12% churn reduction",
+      "linkedToRole": "CURATEUR Senior Email Marketing Manager",
+      "tags": ["churn", "ltv", "retention"],
+      "version": "base"
+    },
+    {
+      "id": "qdoba-loyalty-58",
+      "text": "Evolved loyalty program at QDOBA, growing membership by 58% through advanced segmentation, retention-focused campaigns, and churn analytics, driving incremental revenue and LTV uplift",
+      "metric": "58% membership growth",
+      "linkedToRole": "QDOBA CRM Campaign Analyst",
+      "tags": ["loyalty", "segmentation", "qdoba"],
+      "version": "base"
+    },
+    {
+      "id": "cross-functional-leadership",
+      "text": "Served as cross-functional leader on platform migrations and retention roadmap prioritization with Brand, Product, CX, Merchandising, and Analytics teams",
+      "metric": "",
+      "linkedToRole": "Hanna Andersson Senior Manager, CRM",
+      "tags": ["leadership", "cross-functional"],
+      "version": "base"
+    },
+    {
+      "id": "people-management",
+      "text": "Led and developed two direct reports, improving team performance and career progression",
+      "metric": "",
+      "linkedToRole": "Hanna Andersson Manager, Email & SMS Marketing",
+      "tags": ["leadership", "team"],
+      "version": "base"
+    }
+  ],
+
+  "technicalSkills": {
+    "tools": [
+      "Salesforce CRM", "Iterable", "Bloomreach", "SFMC", "Braze", 
+      "Google Analytics", "HTML & CSS", "SQL", "Shopify Integrations", 
+      "Attentive", "CAN-SPAM Compliance Tools", "A/B Testing Tools"
+    ],
+    "skillCategories": [
+      "CRM Strategy Development",
+      "Data-Driven Decision Making",
+      "Customer Retention",
+      "Audience Segmentation",
+      "Email Marketing",
+      "Cross-Channel Orchestration",
+      "Workflow Automation",
+      "Personalized Strategies",
+      "Customer Engagement",
+      "Incrementality Testing",
+      "Churn Management",
+      "LTV Modeling",
+      "Subscription Strategies",
+      "Loyalty Program Management",
+      "Project Management"
+    ]
+  },
+
+  "experiences": [
+    {
+      "company": "Hanna Andersson",
+      "location": "San Diego, CA (Remote)",
+      "title": "Senior Manager, CRM",
+      "dates": "Nov 2023 – Present",
+      "isCurrent": true,
+      "bullets": [
+        { "id": "hanna-sms-expansion", "text": "Led aggressive SMS channel expansion as key stakeholder in full ESP and SMS vendor platform migration; implemented new list-growth tactics and advanced segmentation to protect churn, achieving +44% YTD SMS list growth and shifting SMS contribution from 26% to 37% of total CRM revenue (+42% YoY).", "tags": ["sms", "migration", "revenue"], "impactLevel": "high", "version": "base" },
+        { "id": "hanna-personalization", "text": "Owned comprehensive CRM testing/personalization roadmap, including implementing send-time optimization, increasing email engagement +5%.", "tags": ["personalization", "testing"], "impactLevel": "high", "version": "base" },
+        { "id": "hanna-retention-journeys", "text": "Implemented retention-focused journeys that reduced churn across high-value segments and strengthened long-term customer engagement.", "tags": ["retention", "journeys"], "impactLevel": "high", "version": "base" }
+      ]
+    },
+    {
+      "company": "Hanna Andersson",
+      "location": "San Diego, CA (Remote)",
+      "title": "Manager, Email & SMS Marketing",
+      "dates": "Oct 2022 – Nov 2023",
+      "isCurrent": false,
+      "bullets": [
+        { "id": "hanna-manager-strategy", "text": "Owned CRM day-to-day strategy and execution, driving full-year comp actualization to +8.6% while navigating a complex marketing tech stack and advancing segmentation.", "tags": ["strategy", "execution"], "impactLevel": "high", "version": "base" },
+        { "id": "hanna-people-management", "text": "Progressed as new people manager; led team to strong results, navigated performance challenges, and improved reporting/actionable insights from data.", "tags": ["leadership"], "impactLevel": "high", "version": "base" }
+      ]
+    },
+    {
+      "company": "CURATEUR",
+      "location": "Los Angeles, CA (Remote)",
+      "title": "Senior Email Marketing Manager",
+      "dates": "Feb 2021 – Oct 2022",
+      "isCurrent": false,
+      "bullets": [
+        { "id": "curateur-revenue-62", "text": "Drove 62% of total company revenue through full ownership of CRM programs, including email, SMS, and retention marketing.", "tags": ["revenue"], "impactLevel": "high", "version": "base" },
+        { "id": "curateur-churn-12", "text": "Reduced churn by 12% through personalized lifecycle touchpoints and targeted retention offers.", "tags": ["churn", "retention"], "impactLevel": "high", "version": "base" }
+      ]
+    },
+    {
+      "company": "QDOBA Restaurant Corporation",
+      "location": "San Diego, CA",
+      "title": "CRM Campaign Analyst",
+      "dates": "Dec 2018 – Apr 2020",
+      "isCurrent": false,
+      "bullets": [
+        { "id": "qdoba-loyalty-58", "text": "Increased loyalty membership by 58% through targeted retention and acquisition strategies.", "tags": ["loyalty"], "impactLevel": "high", "version": "base" }
+      ]
+    }
+  ],
+
+  "education": [
+    {
+      "degree": "Bachelor of Business Administration, Marketing",
+      "field": "Marketing",
+      "graduationYear": "2016",
+      "institution": "University of San Diego",
+      "location": "San Diego, CA"
+    }
+  ],
+
+  "metadata": {
+    "lastUpdated": "2025-02-19",
+    "totalRoles": 6,
+    "totalBullets": 28,
+    "defaultVersion": "base"
+  }
+}
