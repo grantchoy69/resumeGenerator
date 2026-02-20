@@ -1,0 +1,163 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Kyle Amundson Resume Data Bank Schema",
+  "description": "Modular JSON schema for your full career fact bank. Designed to support dynamic resume generation by selecting/filtering facts (e.g., by role, impact type, version, or tags). All core sections from your provided resume(s) are captured. Bullets/accomplishments are stored as reusable facts with metadata for easy mixing/matching.",
+  "type": "object",
+  "required": [
+    "personalInfo",
+    "headlines",
+    "professionalSummaries",
+    "keyAccomplishments",
+    "technicalSkills",
+    "experiences",
+    "education"
+  ],
+  "properties": {
+    "personalInfo": {
+      "type": "object",
+      "required": ["fullName", "location", "email", "phone"],
+      "properties": {
+        "fullName": { "type": "string", "description": "KYLE AMUNDSON" },
+        "location": { "type": "string", "description": "San Diego, CA" },
+        "email": { "type": "string", "format": "email", "description": "kyleaamundson@gmail.com" },
+        "phone": { "type": "string", "description": "(702) 354-1934" },
+        "linkedin": { "type": "string", "format": "uri", "description": "https://linkedin.com/in/kyleamundson" },
+        "customFooterNote": { "type": "string", "description": "Optional one-line note (e.g., 'Open to relocation' or 'Willing to travel')" }
+      }
+    },
+
+    "headlines": {
+      "type": "array",
+      "description": "Multiple headline variations (pick one or combine for target role)",
+      "items": {
+        "type": "object",
+        "required": ["text"],
+        "properties": {
+          "text": { "type": "string" },
+          "version": { "type": "string", "enum": ["base", "template", "custom"] },
+          "tags": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    },
+
+    "professionalSummaries": {
+      "type": "array",
+      "description": "Reusable summary paragraphs (one primary + variants)",
+      "items": {
+        "type": "object",
+        "required": ["text"],
+        "properties": {
+          "text": { "type": "string" },
+          "version": { "type": "string", "enum": ["base", "template", "custom"] },
+          "length": { "type": "string", "enum": ["short", "medium", "long"] },
+          "tags": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    },
+
+    "keyAccomplishments": {
+      "type": "array",
+      "description": "Bank of all highlighted achievements (select 4–7 for any resume). Each is a reusable fact.",
+      "items": {
+        "type": "object",
+        "required": ["id", "text"],
+        "properties": {
+          "id": { "type": "string", "description": "Unique identifier, e.g., 'sms-expansion-2024'" },
+          "text": { "type": "string" },
+          "metric": { "type": "string", "description": "Isolated number/percentage for easy re-use" },
+          "linkedToRole": { "type": "string", "description": "Hanna Andersson Senior Manager, etc." },
+          "tags": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "e.g., ['sms', 'revenue', 'churn', 'loyalty', 'leadership']"
+          },
+          "version": { "type": "string", "enum": ["base", "template"] }
+        }
+      }
+    },
+
+    "technicalSkills": {
+      "type": "object",
+      "properties": {
+        "tools": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "All platforms/tools ever used (filter by relevance later)"
+        },
+        "skillCategories": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "High-level categories shown at bottom of skills section"
+        },
+        "versions": {
+          "type": "object",
+          "properties": {
+            "base": { "type": "array", "items": { "type": "string" } },
+            "template": { "type": "array", "items": { "type": "string" } }
+          }
+        }
+      }
+    },
+
+    "experiences": {
+      "type": "array",
+      "description": "Full career history. Each role contains ALL possible bullets; generator selects subset.",
+      "items": {
+        "type": "object",
+        "required": ["company", "location", "title", "dates", "bullets"],
+        "properties": {
+          "company": { "type": "string" },
+          "location": { "type": "string" },
+          "title": { "type": "string" },
+          "dates": { "type": "string", "description": "e.g., 'Nov 2023 – Present'" },
+          "isCurrent": { "type": "boolean" },
+          "bullets": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["id", "text"],
+              "properties": {
+                "id": { "type": "string", "description": "Unique bullet ID for selection" },
+                "text": { "type": "string" },
+                "tags": {
+                  "type": "array",
+                  "items": { "type": "string" },
+                  "description": "e.g., ['sms', 'migration', 'revenue', 'team-lead']"
+                },
+                "impactLevel": { "type": "string", "enum": ["high", "medium", "supporting"] },
+                "version": { "type": "string", "enum": ["base", "template"] }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "education": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["degree", "institution", "graduationYear"],
+        "properties": {
+          "degree": { "type": "string" },
+          "field": { "type": "string" },
+          "graduationYear": { "type": "string" },
+          "institution": { "type": "string" },
+          "location": { "type": "string" }
+        }
+      }
+    },
+
+    "metadata": {
+      "type": "object",
+      "description": "For future modular features",
+      "properties": {
+        "lastUpdated": { "type": "string", "format": "date" },
+        "totalRoles": { "type": "integer" },
+        "totalBullets": { "type": "integer" },
+        "defaultVersion": { "type": "string", "enum": ["base", "template"] }
+      }
+    }
+  },
+  "additionalProperties": false
+}

@@ -6,43 +6,56 @@
   <title>Truth Bank Editor</title>
   <style>
     body { font-family: system-ui, -apple-system, Segoe UI, sans-serif; margin: 0; background: #f5f5f7; }
-    .layout { max-width: 1100px; margin: 0 auto; padding: 16px; display: grid; grid-template-columns: 360px 1fr; gap: 16px; }
+    .layout { max-width: 1200px; margin: 0 auto; padding: 16px; display: grid; grid-template-columns: 420px 1fr; gap: 16px; }
     .card { background: #fff; border-radius: 12px; padding: 14px; box-shadow: 0 2px 10px rgba(0,0,0,0.06); }
+    h3, h4 { margin: 0; }
     label { display: block; font-size: 12px; color: #444; margin-top: 10px; }
-    input, select, textarea { width: 100%; padding: 8px 10px; margin-top: 6px; border: 1px solid #ccc; border-radius: 8px; }
-    textarea { min-height: 120px; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 12px; }
+    input, select, textarea { width: 100%; padding: 8px 10px; margin-top: 6px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; }
+    textarea { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 12px; line-height: 1.35; }
+    .jsonBox { min-height: 180px; }
+    .bulletBox { min-height: 110px; font-family: system-ui, -apple-system, Segoe UI, sans-serif; font-size: 13px; }
     button { padding: 9px 12px; border-radius: 10px; border: none; background: #222; color: #fff; cursor: pointer; margin-top: 10px; }
-    .muted { font-size: 12px; color: #666; line-height: 1.35; }
-    .bulletList { margin: 10px 0 0 0; padding-left: 18px; }
-    .bulletList li { margin: 6px 0; font-size: 13px; line-height: 1.35; }
+    button.secondary { background:#444; }
+    .muted { font-size: 12px; color: #666; line-height: 1.35; margin-top: 6px; }
+    .error { color: #b00020; font-size: 12px; white-space: pre-wrap; margin-top: 10px; }
     .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    .error { color: #b00020; font-size: 12px; white-space: pre-wrap; margin-top: 8px; }
     .metaLine { font-size: 12px; color: #444; margin-top: 10px; }
     code.inline { background: #f1f1f1; padding: 2px 6px; border-radius: 6px; }
+    .bulletList { margin: 10px 0 0 0; padding-left: 18px; }
+    .bulletList li { margin: 6px 0; font-size: 13px; line-height: 1.35; }
+    .pillRow { display:flex; gap:8px; flex-wrap:wrap; margin-top:8px; }
+    .pill { font-size:12px; background:#f1f1f1; border-radius:999px; padding:4px 10px; }
+    .divider { margin: 14px 0; border:none; border-top:1px solid #eee; }
   </style>
 </head>
 <body>
   <div class="layout">
     <div class="card">
-      <h3 style="margin:0;">Truth Bank Editor</h3>
+      <h3>Truth Bank Editor</h3>
       <p class="muted">
-        Load your truth bank JSON. Select a job. Add bullets through a form. Save the updated JSON.
+        Paste your truth bank JSON, click <b>Load</b>, then select a job and add bullets. Download the updated JSON when you’re done.
       </p>
 
-      <label>Load truth bank JSON</label>
-      <input id="filePicker" type="file" accept=".json,application/json" />
+      <label>Truth Bank JSON (paste here)</label>
+      <textarea id="truthBankInput" class="jsonBox" spellcheck="false" placeholder="{ ... }"></textarea>
+      <button id="loadBtn" type="button">Load truth bank</button>
 
       <div id="metaSummary" class="metaLine"></div>
+      <div id="errorBox" class="error"></div>
+
+      <hr class="divider" />
 
       <label>Job</label>
-      <select id="jobSelect"></select>
+      <select id="jobSelect" disabled></select>
 
-      <hr style="margin:14px 0; border:none; border-top:1px solid #eee;" />
+      <div class="pillRow" id="jobPills"></div>
 
-      <h4 style="margin:0 0 8px 0;">Add a bullet</h4>
+      <hr class="divider" />
+
+      <h4 style="margin-bottom:8px;">Add a bullet</h4>
 
       <label>Bullet text</label>
-      <textarea id="bulletText"></textarea>
+      <textarea id="bulletText" class="bulletBox" placeholder="Led..., Built..., Implemented..."></textarea>
 
       <label>Tags (comma separated)</label>
       <input id="bulletTags" placeholder="lifecycle, automation, retention" />
@@ -67,20 +80,18 @@
         verified
       </label>
 
-      <button id="addBulletBtn" type="button">Add bullet to selected job</button>
-      <button id="downloadBtn" type="button" style="background:#444;">Download updated JSON</button>
-
-      <div id="errorBox" class="error"></div>
+      <button id="addBulletBtn" type="button" disabled>Add bullet to selected job</button>
+      <button id="downloadBtn" type="button" class="secondary" disabled>Download updated JSON</button>
     </div>
 
     <div class="card">
-      <h3 style="margin:0;">Selected job bullets</h3>
+      <h3>Selected job bullets</h3>
       <ul id="existingBullets" class="bulletList"></ul>
 
       <h3 style="margin:18px 0 8px 0;">Updated JSON</h3>
-      <textarea id="jsonOutput" spellcheck="false"></textarea>
+      <textarea id="jsonOutput" class="jsonBox" spellcheck="false"></textarea>
       <p class="muted">
-        Tip: This JSON should remain schema-valid. Keep it as the new master truth bank.
+        This is your new master truth bank JSON. Save it somewhere safe.
       </p>
     </div>
   </div>
@@ -91,6 +102,10 @@
     function safeText(x) {
       if (x === null || x === undefined) return "";
       return String(x);
+    }
+
+    function setError(msg) {
+      document.getElementById("errorBox").textContent = msg || "";
     }
 
     function slugify(text) {
@@ -170,12 +185,40 @@
     function refreshJobSelect() {
       const sel = document.getElementById("jobSelect");
       sel.innerHTML = "";
+
       const exps = truthBank && truthBank.experiences ? truthBank.experiences : [];
       exps.forEach((exp, idx) => {
         const opt = document.createElement("option");
         opt.value = String(idx);
         opt.textContent = `${exp.company} | ${exp.title} | ${exp.dates}`;
         sel.appendChild(opt);
+      });
+
+      sel.disabled = exps.length === 0;
+    }
+
+    function refreshJobPills() {
+      const pillWrap = document.getElementById("jobPills");
+      pillWrap.innerHTML = "";
+
+      if (!truthBank || !truthBank.experiences || truthBank.experiences.length === 0) return;
+
+      const idx = Number(document.getElementById("jobSelect").value || 0);
+      const exp = truthBank.experiences[idx];
+      if (!exp) return;
+
+      const pills = [
+        `Company: ${safeText(exp.company)}`,
+        `Title: ${safeText(exp.title)}`,
+        `Dates: ${safeText(exp.dates)}`,
+        `Current: ${exp.isCurrent ? "Yes" : "No"}`
+      ];
+
+      pills.forEach(p => {
+        const div = document.createElement("div");
+        div.className = "pill";
+        div.textContent = p;
+        pillWrap.appendChild(div);
       });
     }
 
@@ -198,7 +241,13 @@
     }
 
     function refreshJsonOutput() {
-      document.getElementById("jsonOutput").value = JSON.stringify(truthBank, null, 2);
+      document.getElementById("jsonOutput").value = truthBank ? JSON.stringify(truthBank, null, 2) : "";
+    }
+
+    function enableEditing(enabled) {
+      document.getElementById("jobSelect").disabled = !enabled;
+      document.getElementById("addBulletBtn").disabled = !enabled;
+      document.getElementById("downloadBtn").disabled = !enabled;
     }
 
     function downloadJson(filenameBase, obj) {
@@ -227,39 +276,50 @@
       URL.revokeObjectURL(url);
     }
 
-    function setError(msg) {
-      document.getElementById("errorBox").textContent = msg || "";
-    }
-
-    document.getElementById("filePicker").addEventListener("change", async (ev) => {
-      const file = ev.target.files && ev.target.files[0];
-      if (!file) return;
+    document.getElementById("loadBtn").addEventListener("click", () => {
+      const raw = safeText(document.getElementById("truthBankInput").value).trim();
+      if (!raw) {
+        setError("Paste a truth bank JSON first.");
+        truthBank = null;
+        enableEditing(false);
+        refreshJsonOutput();
+        refreshMetaSummary();
+        return;
+      }
 
       try {
-        const text = await file.text();
-        truthBank = JSON.parse(text);
+        truthBank = JSON.parse(raw);
 
         if (!truthBank.experiences || !Array.isArray(truthBank.experiences)) {
           setError("This JSON does not look like a truth bank. Missing experiences[].");
           truthBank = null;
+          enableEditing(false);
+          refreshJsonOutput();
+          refreshMetaSummary();
           return;
         }
 
         recalcMetadata(truthBank);
-
         setError("");
+        enableEditing(true);
+
         refreshJobSelect();
+        refreshJobPills();
         refreshBulletsView();
         refreshMetaSummary();
         refreshJsonOutput();
       } catch (e) {
         truthBank = null;
-        setError("Could not load JSON: " + e.message);
+        enableEditing(false);
+        refreshJsonOutput();
+        refreshMetaSummary();
+        setError("Could not parse JSON:\n" + e.message);
       }
     });
 
     document.getElementById("jobSelect").addEventListener("change", () => {
       if (!truthBank) return;
+      refreshJobPills();
       refreshBulletsView();
     });
 
@@ -285,7 +345,7 @@
       const idx = Number(document.getElementById("jobSelect").value || 0);
       const exp = truthBank.experiences[idx];
       if (!exp) {
-        setError("Selected job not found. Reload the file and try again.");
+        setError("Selected job not found. Reload the truth bank and try again.");
         return;
       }
       if (!exp.bullets) exp.bullets = [];
@@ -323,9 +383,25 @@
       recalcMetadata(truthBank);
       refreshMetaSummary();
       refreshJsonOutput();
-
       downloadJson("truthBankUpdated", truthBank);
     });
+    function tryLoadFromLocalStorage() {
+  const saved = localStorage.getItem("truthBankDraft");
+  if (!saved) return;
+
+  const inputEl = document.getElementById("truthBankInput");
+  if (!inputEl) return;
+
+  inputEl.value = saved;
+
+  // Optional: auto-load immediately
+  // If you prefer manual load, remove the next line.
+  document.getElementById("loadBtn").click();
+}
+window.addEventListener("load", () => {
+  tryLoadFromLocalStorage();
+});
+    enableEditing(false);
   </script>
 </body>
 </html>

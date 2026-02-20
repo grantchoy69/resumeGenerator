@@ -329,17 +329,6 @@
           "impactLevel": "high",
           "version": "new-confirmed",
           "verified": true
-        },
-        {
-          "id": "hanna-andersson-senior-manager-crm-no-idea",
-          "text": "no idea",
-          "tags": [
-            "ahhh",
-            "lick my balls"
-          ],
-          "impactLevel": "medium",
-          "version": "bank",
-          "verified": true
         }
       ]
     },
@@ -637,8 +626,8 @@
           "verified": true
         },
         {
-          "id": "qdoba-restaurant-corporation-email-crm-campaign-analyst-test",
-          "text": "test add",
+          "id": "qdoba-restaurant-corporation-email-crm-campaign-analyst-wow",
+          "text": "wow!!!",
           "tags": [],
           "impactLevel": "medium",
           "version": "bank",
@@ -659,7 +648,7 @@
   "metadata": {
     "lastUpdated": "2026-02-19",
     "totalRoles": 4,
-    "totalBullets": 31,
+    "totalBullets": 32,
     "defaultVersion": "base"
   }
 }
