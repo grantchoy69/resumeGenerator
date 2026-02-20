@@ -5,545 +5,147 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Kyle Resume Generator</title>
   <style>
-  body {
-  margin: 0;
-  font-family: 'Inter', system-ui, sans-serif;
-  background: #f8fafc;
-  display: flex;
-  height: 100vh;
-  overflow: hidden;
-}
-
-.editor {
-  width: 380px;              /* was 440 */
-  background: #1e2937;
-  color: white;
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  overflow-y: auto;
-}
-
-.preview {
-  flex: 1;
-  background: white;
-  overflow-y: auto;
-  padding: 20px 28px;        /* reduced */
-  box-shadow: inset 0 0 16px rgba(0,0,0,0.04);
-}
-
-textarea {
-  flex: 1;
-  background: #0f172a;
-  color: #e2e8f0;
-  border: none;
-  border-radius: 6px;
-  padding: 12px;
-  font-family: monospace;
-  font-size: 12px;
-  resize: none;
-}
-
-button {
-  background: #3b82f6;
-  color: white;
-  border: none;
-  padding: 10px 18px;       /* smaller */
-  border-radius: 6px;
-  font-weight: 600;
-  cursor: pointer;
-  font-size: 14px;
-}
-
-/* ==================== RESUME STYLING ==================== */
-
-.resume {
-  max-width: 8.5in;
-  margin: 0 auto;
-  background: white;
-  padding: 0.4in 0.4in;     /* slightly tighter */
-  font-size: 9.8pt;         /* slightly smaller */
-  line-height: 1.35;        /* tighter */
-  color: #1f2937;
-}
-
-.header {
-  text-align: center;
-  margin-bottom: 0.12in;   /* reduced */
-  padding-bottom: 0.1in;
-  border-bottom: 2px solid #1e40af; /* thinner */
-}
-
-h1 {
-  font-size: 24pt;          /* was 27 */
-  font-weight: 700;
-  color: #1e40af;
-  margin-bottom: 3pt;
-}
-
-.contact {
-  font-size: 9.8pt;
-  color: #475569;
-}
-
-.title {
-  font-size: 10.5pt;
-  font-weight: 600;
-  color: #1e40af;
-  margin: 6pt 0 6pt;        /* tighter */
-}
-
-h2 {
-  font-size: 9.8pt;
-  color: #1e40af;
-  border-bottom: 1px solid #e2e8f0;
-  padding-bottom: 3pt;
-  margin: 10pt 0 6pt;       /* reduced */
-}
-
-ul {
-  padding-left: 16pt;
-  margin: 4pt 0 8pt;        /* reduced */
-}
-
-li {
-  margin-bottom: 4pt;       /* tighter bullets */
-}
-
-.skills {
-  font-size: 9.6pt;
-  line-height: 1.3;
-  color: #374151;
-}
-
-section {
-  margin-bottom: 8pt;       /* new — compress section gap */
-}
-
-/* Experience block tighter */
-.jobBlock {
-  margin-bottom: 10pt;      /* was 16pt inline */
-}
-
-@page {
-  size: letter;
-  margin: 0.4in;
-}body {
-  margin: 0;
-  font-family: 'Inter', system-ui, sans-serif;
-  background: #f8fafc;
-  display: flex;
-  height: 100vh;
-  overflow: hidden;
-}
-
-.editor {
-  width: 380px;              /* was 440 */
-  background: #1e2937;
-  color: white;
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  overflow-y: auto;
-}
-
-.preview {
-  flex: 1;
-  background: white;
-  overflow-y: auto;
-  padding: 20px 28px;        /* reduced */
-  box-shadow: inset 0 0 16px rgba(0,0,0,0.04);
-}
-
-textarea {
-  flex: 1;
-  background: #0f172a;
-  color: #e2e8f0;
-  border: none;
-  border-radius: 6px;
-  padding: 12px;
-  font-family: monospace;
-  font-size: 12px;
-  resize: none;
-}
-
-button {
-  background: #3b82f6;
-  color: white;
-  border: none;
-  padding: 10px 18px;       /* smaller */
-  border-radius: 6px;
-  font-weight: 600;
-  cursor: pointer;
-  font-size: 14px;
-}
-
-/* ==================== RESUME STYLING ==================== */
-
-.resume {
-  max-width: 8.5in;
-  margin: 0 auto;
-  background: white;
-  padding: 0.4in 0.4in;     /* slightly tighter */
-  font-size: 9.8pt;         /* slightly smaller */
-  line-height: 1.35;        /* tighter */
-  color: #1f2937;
-}
-
-.header {
-  text-align: center;
-  margin-bottom: 0.12in;   /* reduced */
-  padding-bottom: 0.1in;
-  border-bottom: 2px solid #1e40af; /* thinner */
-}
-
-h1 {
-  font-size: 24pt;          /* was 27 */
-  font-weight: 700;
-  color: #1e40af;
-  margin-bottom: 3pt;
-}
-
-.contact {
-  font-size: 9.8pt;
-  color: #475569;
-}
-
-.title {
-  font-size: 10.5pt;
-  font-weight: 600;
-  color: #1e40af;
-  margin: 6pt 0 6pt;        /* tighter */
-}
-
-h2 {
-  font-size: 9.8pt;
-  color: #1e40af;
-  border-bottom: 1px solid #e2e8f0;
-  padding-bottom: 3pt;
-  margin: 10pt 0 6pt;       /* reduced */
-}
-
-ul {
-  padding-left: 16pt;
-  margin: 4pt 0 8pt;        /* reduced */
-}
-
-li {
-  margin-bottom: 4pt;       /* tighter bullets */
-}
-
-.skills {
-  font-size: 9.6pt;
-  line-height: 1.3;
-  color: #374151;
-}
-
-section {
-  margin-bottom: 8pt;       /* new — compress section gap */
-}
-
-/* Experience block tighter */
-.jobBlock {
-  margin-bottom: 10pt;      /* was 16pt inline */
-}
-
-@page {
-  size: letter;
-  margin: 0.4in;
-}body {
-  margin: 0;
-  font-family: 'Inter', system-ui, sans-serif;
-  background: #f8fafc;
-  display: flex;
-  height: 100vh;
-  overflow: hidden;
-}
-
-.editor {
-  width: 380px;              /* was 440 */
-  background: #1e2937;
-  color: white;
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  overflow-y: auto;
-}
-
-.preview {
-  flex: 1;
-  background: white;
-  overflow-y: auto;
-  padding: 20px 28px;        /* reduced */
-  box-shadow: inset 0 0 16px rgba(0,0,0,0.04);
-}
-
-textarea {
-  flex: 1;
-  background: #0f172a;
-  color: #e2e8f0;
-  border: none;
-  border-radius: 6px;
-  padding: 12px;
-  font-family: monospace;
-  font-size: 12px;
-  resize: none;
-}
-
-button {
-  background: #3b82f6;
-  color: white;
-  border: none;
-  padding: 10px 18px;       /* smaller */
-  border-radius: 6px;
-  font-weight: 600;
-  cursor: pointer;
-  font-size: 14px;
-}
-
-/* ==================== RESUME STYLING ==================== */
-
-.resume {
-  max-width: 8.5in;
-  margin: 0 auto;
-  background: white;
-  padding: 0.4in 0.4in;     /* slightly tighter */
-  font-size: 9.8pt;         /* slightly smaller */
-  line-height: 1.35;        /* tighter */
-  color: #1f2937;
-}
-
-.header {
-  text-align: center;
-  margin-bottom: 0.12in;   /* reduced */
-  padding-bottom: 0.1in;
-  border-bottom: 2px solid #1e40af; /* thinner */
-}
-
-h1 {
-  font-size: 24pt;          /* was 27 */
-  font-weight: 700;
-  color: #1e40af;
-  margin-bottom: 3pt;
-}
-
-.contact {
-  font-size: 9.8pt;
-  color: #475569;
-}
-
-.title {
-  font-size: 10.5pt;
-  font-weight: 600;
-  color: #1e40af;
-  margin: 6pt 0 6pt;        /* tighter */
-}
-
-h2 {
-  font-size: 9.8pt;
-  color: #1e40af;
-  border-bottom: 1px solid #e2e8f0;
-  padding-bottom: 3pt;
-  margin: 10pt 0 6pt;       /* reduced */
-}
-
-ul {
-  padding-left: 16pt;
-  margin: 4pt 0 8pt;        /* reduced */
-}
-
-li {
-  margin-bottom: 4pt;       /* tighter bullets */
-}
-
-.skills {
-  font-size: 9.6pt;
-  line-height: 1.3;
-  color: #374151;
-}
-
-section {
-  margin-bottom: 8pt;       /* new — compress section gap */
-}
-
-/* Experience block tighter */
-.jobBlock {
-  margin-bottom: 10pt;      /* was 16pt inline */
-}
-
-@page {
-  size: letter;
-  margin: 0.4in;
-}body {
-  margin: 0;
-  font-family: 'Inter', system-ui, sans-serif;
-  background: #f8fafc;
-  display: flex;
-  height: 100vh;
-  overflow: hidden;
-}
-
-.editor {
-  width: 380px;              /* was 440 */
-  background: #1e2937;
-  color: white;
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  overflow-y: auto;
-}
-
-.preview {
-  flex: 1;
-  background: white;
-  overflow-y: auto;
-  padding: 20px 28px;        /* reduced */
-  box-shadow: inset 0 0 16px rgba(0,0,0,0.04);
-}
-
-textarea {
-  flex: 1;
-  background: #0f172a;
-  color: #e2e8f0;
-  border: none;
-  border-radius: 6px;
-  padding: 12px;
-  font-family: monospace;
-  font-size: 12px;
-  resize: none;
-}
-
-button {
-  background: #3b82f6;
-  color: white;
-  border: none;
-  padding: 10px 18px;       /* smaller */
-  border-radius: 6px;
-  font-weight: 600;
-  cursor: pointer;
-  font-size: 14px;
-}
-
-/* ==================== RESUME STYLING ==================== */
-
-.resume {
-  max-width: 8.5in;
-  margin: 0 auto;
-  background: white;
-  padding: 0.4in 0.4in;     /* slightly tighter */
-  font-size: 9.8pt;         /* slightly smaller */
-  line-height: 1.35;        /* tighter */
-  color: #1f2937;
-}
-
-.header {
-  text-align: center;
-  margin-bottom: 0.12in;   /* reduced */
-  padding-bottom: 0.1in;
-  border-bottom: 2px solid #1e40af; /* thinner */
-}
-
-h1 {
-  font-size: 24pt;          /* was 27 */
-  font-weight: 700;
-  color: #1e40af;
-  margin-bottom: 3pt;
-}
-
-.contact {
-  font-size: 9.8pt;
-  color: #475569;
-}
-
-.title {
-  font-size: 10.5pt;
-  font-weight: 600;
-  color: #1e40af;
-  margin: 6pt 0 6pt;        /* tighter */
-}
-
-h2 {
-  font-size: 9.8pt;
-  color: #1e40af;
-  border-bottom: 1px solid #e2e8f0;
-  padding-bottom: 3pt;
-  margin: 10pt 0 6pt;       /* reduced */
-}
-
-ul {
-  padding-left: 16pt;
-  margin: 4pt 0 8pt;        /* reduced */
-}
-
-li {
-  margin-bottom: 4pt;       /* tighter bullets */
-}
-
-.skills {
-  font-size: 9.6pt;
-  line-height: 1.3;
-  color: #374151;
-}
-
-section {
-  margin-bottom: 8pt;       /* new — compress section gap */
-}
-
-/* Experience block tighter */
-.jobBlock {
-  margin-bottom: 10pt;      /* was 16pt inline */
-}
-
-@page {
-  size: letter;
-  margin: 0.4in;
-}
-@media print {
-  /* Let the page grow and paginate */
-  html, body {
-    height: auto !important;
-    overflow: visible !important;
-  }
-
-  body {
-    display: block !important;
-    background: #fff !important;
-  }
-
-  /* Hide the entire left editor column + any controls */
-  .editor,
-  textarea,
-  button,
-  input,
-  select,
-  .toolRow {
-    display: none !important;
-  }
-
-  /* Make the preview area the only thing printed */
-  .preview {
-    overflow: visible !important;
-    height: auto !important;
-    padding: 0 !important;
-    box-shadow: none !important;
-  }
-
-  .resume {
-    margin: 0 !important;
-    max-width: none !important;
-    padding: 0 !important; /* use @page margin instead */
-    box-shadow: none !important;
-  }
-}
-
-@page {
-  size: letter;
-  margin: 0.4in;
-}
+    body {
+      margin: 0;
+      font-family: 'Inter', system-ui, sans-serif;
+      background: #f8fafc;
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .editor {
+      width: 380px;
+      background: #1e2937;
+      color: white;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      overflow-y: auto;
+    }
+
+    .preview {
+      flex: 1;
+      background: white;
+      overflow-y: auto;
+      padding: 20px 28px;
+      box-shadow: inset 0 0 16px rgba(0,0,0,0.04);
+    }
+
+    textarea {
+      flex: 1;
+      background: #0f172a;
+      color: #e2e8f0;
+      border: none;
+      border-radius: 6px;
+      padding: 12px;
+      font-family: monospace;
+      font-size: 12px;
+      resize: none;
+    }
+
+    button {
+      background: #3b82f6;
+      color: white;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    /* ==================== RESUME STYLING WITH CUSTOMIZABLE VARS ==================== */
+    .resume {
+      max-width: 8.5in;
+      margin: 0 auto;
+      background: white;
+      padding: 0.4in 0.4in;
+      font-size: var(--body-font-size, 9.8pt);
+      line-height: var(--line-height, 1.35);
+      color: #1f2937;
+
+      /* New customizable variables */
+      --name-font-size: 24pt;
+      --title-font-size: 10.5pt;
+      --section-font-size: 9.8pt;
+      --body-font-size: 9.8pt;
+      --line-height: 1.35;
+      --section-spacing: 8pt;
+      --job-spacing: 10pt;
+      --bullet-spacing: 4pt;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 0.12in;
+      padding-bottom: 0.1in;
+      border-bottom: 2px solid #1e40af;
+    }
+
+    h1 {
+      font-size: var(--name-font-size);
+      font-weight: 700;
+      color: #1e40af;
+      margin-bottom: 3pt;
+    }
+
+    .contact {
+      font-size: 9.8pt;
+      color: #475569;
+    }
+
+    .title {
+      font-size: var(--title-font-size);
+      font-weight: 600;
+      color: #1e40af;
+      margin: 6pt 0 6pt;
+    }
+
+    h2 {
+      font-size: var(--section-font-size);
+      color: #1e40af;
+      border-bottom: 1px solid #e2e8f0;
+      padding-bottom: 3pt;
+      margin: 10pt 0 6pt;
+    }
+
+    ul {
+      padding-left: 16pt;
+      margin: 4pt 0 8pt;
+    }
+
+    li {
+      margin-bottom: var(--bullet-spacing);
+    }
+
+    .skills {
+      font-size: 9.6pt;
+      line-height: 1.3;
+      color: #374151;
+    }
+
+    section {
+      margin-bottom: var(--section-spacing);
+    }
+
+    .jobBlock {
+      margin-bottom: var(--job-spacing);
+    }
+
+    @page {
+      size: letter;
+      margin: 0.4in;
+    }
+
+    @media print {
+      html, body { height: auto !important; overflow: visible !important; }
+      body { display: block !important; background: #fff !important; }
+      .editor, textarea, button, input, select, .toolRow, .styling-panel { display: none !important; }
+      .preview { overflow: visible !important; height: auto !important; padding: 0 !important; box-shadow: none !important; }
+      .resume { margin: 0 !important; max-width: none !important; padding: 0 !important; box-shadow: none !important; }
+    }
   </style>
 </head>
 <body>
@@ -555,7 +157,53 @@ section {
     <textarea id="jsonInput" placeholder='Paste the full JSON here...'></textarea>
     
     <button onclick="renderResume()">Render Resume</button>
-    
+
+    <!-- NEW STYLING CONTROLS -->
+    <div class="styling-panel" style="background:#334155; padding:12px; border-radius:6px;">
+      <h3 style="color:white; font-size:14px; margin:0 0 10px 0;">Customize Resume Style</h3>
+      <div style="display:flex; flex-direction:column; gap:10px; font-size:13px; color:#cbd5e1;">
+        <label>Name Font Size: 
+          <input type="range" id="nameSize" min="20" max="32" step="0.5" value="24" style="width:150px;">
+          <span id="nameVal" style="color:#94a3b8; display:inline-block; width:45px; text-align:right;">24pt</span>
+        </label>
+
+        <label>Subtitle Font Size: 
+          <input type="range" id="titleSize" min="9" max="13" step="0.2" value="10.5" style="width:150px;">
+          <span id="titleVal" style="color:#94a3b8; display:inline-block; width:45px; text-align:right;">10.5pt</span>
+        </label>
+
+        <label>Section Header Font Size: 
+          <input type="range" id="sectionSize" min="8.5" max="12" step="0.2" value="9.8" style="width:150px;">
+          <span id="sectionVal" style="color:#94a3b8; display:inline-block; width:45px; text-align:right;">9.8pt</span>
+        </label>
+
+        <label>Body Font Size: 
+          <input type="range" id="bodySize" min="8.5" max="11.5" step="0.2" value="9.8" style="width:150px;">
+          <span id="bodyVal" style="color:#94a3b8; display:inline-block; width:45px; text-align:right;">9.8pt</span>
+        </label>
+
+        <label>Line Height: 
+          <input type="range" id="lineHeight" min="1.1" max="1.6" step="0.05" value="1.35" style="width:150px;">
+          <span id="lineVal" style="color:#94a3b8; display:inline-block; width:45px; text-align:right;">1.35</span>
+        </label>
+
+        <label>Section Spacing: 
+          <input type="range" id="secSpace" min="4" max="16" step="1" value="8" style="width:150px;">
+          <span id="secVal" style="color:#94a3b8; display:inline-block; width:45px; text-align:right;">8pt</span>
+        </label>
+
+        <label>Job Block Spacing: 
+          <input type="range" id="jobSpace" min="6" max="20" step="1" value="10" style="width:150px;">
+          <span id="jobVal" style="color:#94a3b8; display:inline-block; width:45px; text-align:right;">10pt</span>
+        </label>
+
+        <label>Bullet Spacing: 
+          <input type="range" id="bulletSpace" min="2" max="8" step="1" value="4" style="width:150px;">
+          <span id="bulletVal" style="color:#94a3b8; display:inline-block; width:45px; text-align:right;">4pt</span>
+        </label>
+      </div>
+    </div>
+
     <small style="color:#64748b;">Ctrl + P → Save as PDF (Margins: Minimum)</small>
   </div>
 
@@ -568,20 +216,32 @@ section {
   </div>
 
   <script>
+    // Current style values
+    let currentStyles = {
+      nameSize: 24, titleSize: 10.5, sectionSize: 9.8, bodySize: 9.8,
+      lineHeight: 1.35, secSpace: 8, jobSpace: 10, bulletSpace: 4
+    };
+
+    function applyStyles() {
+      const resume = document.querySelector('.resume');
+      if (!resume) return;
+      resume.style.setProperty('--name-font-size', currentStyles.nameSize + 'pt');
+      resume.style.setProperty('--title-font-size', currentStyles.titleSize + 'pt');
+      resume.style.setProperty('--section-font-size', currentStyles.sectionSize + 'pt');
+      resume.style.setProperty('--body-font-size', currentStyles.bodySize + 'pt');
+      resume.style.setProperty('--line-height', currentStyles.lineHeight);
+      resume.style.setProperty('--section-spacing', currentStyles.secSpace + 'pt');
+      resume.style.setProperty('--job-spacing', currentStyles.jobSpace + 'pt');
+      resume.style.setProperty('--bullet-spacing', currentStyles.bulletSpace + 'pt');
+    }
+
     function renderResume() {
       const input = document.getElementById('jsonInput').value.trim();
-      if (!input) {
-        alert("Please paste the JSON first");
-        return;
-      }
+      if (!input) { alert("Please paste the JSON first"); return; }
 
       let data;
-      try {
-        data = JSON.parse(input);
-      } catch (e) {
-        alert("Invalid JSON. Please check the format.");
-        return;
-      }
+      try { data = JSON.parse(input); } 
+      catch (e) { alert("Invalid JSON. Please check the format."); return; }
 
       const preview = document.getElementById('resumePreview');
       const pi = data.personalInfo || {};
@@ -595,9 +255,7 @@ section {
           <div class="title">Senior CRM & Lifecycle Marketing Leader | Email & SMS Strategy | Customer Retention</div>
         </div>
 
-        <section>
-          <p>${(data.professionalSummaries && data.professionalSummaries[0] && data.professionalSummaries[0].text) || ''}</p>
-        </section>
+        <section><p>${(data.professionalSummaries && data.professionalSummaries[0] && data.professionalSummaries[0].text) || ''}</p></section>
 
         <section>
           <h2>Selected Key Accomplishments</h2>
@@ -622,9 +280,9 @@ section {
 
       preview.innerHTML = html;
 
-      // Key Accomplishments
-      const accList = document.getElementById('accomplishments');
+      // Populate sections (unchanged)
       if (data.keyAccomplishments) {
+        const accList = document.getElementById('accomplishments');
         data.keyAccomplishments.forEach(item => {
           const li = document.createElement('li');
           li.textContent = item.text;
@@ -632,13 +290,10 @@ section {
         });
       }
 
-      // Technical Skills - ATS friendly
-      const skillsDiv = document.getElementById('skills');
       if (data.technicalSkills && data.technicalSkills.tools) {
-        skillsDiv.textContent = data.technicalSkills.tools.join(" • ");
+        document.getElementById('skills').textContent = data.technicalSkills.tools.join(" • ");
       }
 
-      // Experience
       const expDiv = document.getElementById('experience');
       if (data.experiences) {
         data.experiences.forEach(job => {
@@ -646,9 +301,8 @@ section {
           if (job.bullets && job.bullets.length) {
             bulletsHTML = '<ul>' + job.bullets.map(b => `<li>${b.text}</li>`).join('') + '</ul>';
           }
-
           expDiv.innerHTML += `
-            <div style="margin-bottom:16pt;">
+            <div class="jobBlock">
               <div style="display:flex; justify-content:space-between; margin-bottom:4pt;">
                 <strong>${job.company}</strong>
                 <span style="color:#64748b;">${job.dates}</span>
@@ -660,7 +314,6 @@ section {
         });
       }
 
-      // Education
       const eduDiv = document.getElementById('education');
       if (data.education) {
         data.education.forEach(edu => {
@@ -670,12 +323,38 @@ section {
           `;
         });
       }
+
+      applyStyles();   // <-- Apply custom styles after render
+    }
+
+    // Live styling controls
+    function setupStylingControls() {
+      const ids = ['nameSize','titleSize','sectionSize','bodySize','lineHeight','secSpace','jobSpace','bulletSpace'];
+      ids.forEach(id => {
+        const input = document.getElementById(id);
+        const valSpan = document.getElementById(id.replace('Size','Val').replace('Height','Val').replace('Space','Val'));
+        if (!input || !valSpan) return;
+
+        input.addEventListener('input', () => {
+          const key = id.replace('Size','').replace('Height','').replace('Space','').toLowerCase() + 
+                      (id.includes('Size') ? 'Size' : id.includes('Height') ? 'Height' : 'Space');
+          currentStyles[key] = parseFloat(input.value);
+          valSpan.textContent = currentStyles[key] + (id.includes('Height') ? '' : 'pt');
+          applyStyles();
+        });
+      });
     }
 
     // Ctrl+Enter shortcut
     document.getElementById('jsonInput').addEventListener('keydown', function(e) {
       if (e.ctrlKey && e.key === 'Enter') renderResume();
     });
+
+    // Initialize
+    window.onload = () => {
+      setupStylingControls();
+      // Optional: auto-render if JSON is already in textarea
+    };
   </script>
 </body>
 </html>

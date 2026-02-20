@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Truth Bank Editor</title>
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, sans-serif; margin: 0; background: #f5f5f7; }
+    .layout { max-width: 1100px; margin: 0 auto; padding: 16px; display: grid; grid-template-columns: 360px 1fr; gap: 16px; }
+    .card { background: #fff; border-radius: 12px; padding: 14px; box-shadow: 0 2px 10px rgba(0,0,0,0.06); }
+    label { display: block; font-size: 12px; color: #444; margin-top: 10px; }
+    input, select, textarea { width: 100%; padding: 8px 10px; margin-top: 6px; border: 1px solid #ccc; border-radius: 8px; }
+    textarea { min-height: 120px; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 12px; }
+    button { padding: 9px 12px; border-radius: 10px; border: none; background: #222; color: #fff; cursor: pointer; margin-top: 10px; }
+    .muted { font-size: 12px; color: #666; line-height: 1.35; }
+    .bulletList { margin: 10px 0 0 0; padding-left: 18px; }
+    .bulletList li { margin: 6px 0; font-size: 13px; line-height: 1.35; }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .error { color: #b00020; font-size: 12px; white-space: pre-wrap; margin-top: 8px; }
+    .metaLine { font-size: 12px; color: #444; margin-top: 10px; }
+    code.inline { background: #f1f1f1; padding: 2px 6px; border-radius: 6px; }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <div class="card">
+      <h3 style="margin:0;">Truth Bank Editor</h3>
+      <p class="muted">
+        Load your truth bank JSON. Select a job. Add bullets through a form. Save the updated JSON.
+      </p>
+
+      <label>Load truth bank JSON</label>
+      <input id="filePicker" type="file" accept=".json,application/json" />
+
+      <div id="metaSummary" class="metaLine"></div>
+
+      <label>Job</label>
+      <select id="jobSelect"></select>
+
+      <hr style="margin:14px 0; border:none; border-top:1px solid #eee;" />
+
+      <h4 style="margin:0 0 8px 0;">Add a bullet</h4>
+
+      <label>Bullet text</label>
+      <textarea id="bulletText"></textarea>
+
+      <label>Tags (comma separated)</label>
+      <input id="bulletTags" placeholder="lifecycle, automation, retention" />
+
+      <div class="row">
+        <div>
+          <label>Impact level</label>
+          <select id="impactLevel">
+            <option value="low">low</option>
+            <option value="medium" selected>medium</option>
+            <option value="high">high</option>
+          </select>
+        </div>
+        <div>
+          <label>Version</label>
+          <input id="version" value="bank" />
+        </div>
+      </div>
+
+      <label style="display:flex; align-items:center; gap:8px; margin-top:10px;">
+        <input id="verified" type="checkbox" checked style="width:auto;" />
+        verified
+      </label>
+
+      <button id="addBulletBtn" type="button">Add bullet to selected job</button>
+      <button id="downloadBtn" type="button" style="background:#444;">Download updated JSON</button>
+
+      <div id="errorBox" class="error"></div>
+    </div>
+
+    <div class="card">
+      <h3 style="margin:0;">Selected job bullets</h3>
+      <ul id="existingBullets" class="bulletList"></ul>
+
+      <h3 style="margin:18px 0 8px 0;">Updated JSON</h3>
+      <textarea id="jsonOutput" spellcheck="false"></textarea>
+      <p class="muted">
+        Tip: This JSON should remain schema-valid. Keep it as the new master truth bank.
+      </p>
+    </div>
+  </div>
+
+  <script>
+    let truthBank = null;
+
+    function safeText(x) {
+      if (x === null || x === undefined) return "";
+      return String(x);
+    }
+
+    function slugify(text) {
+      return safeText(text)
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/(^-|-$)/g, "")
+        .slice(0, 60);
+    }
+
+    function makeUniqueId(baseId, existingIds) {
+      let id = baseId;
+      let i = 2;
+      while (existingIds.has(id)) {
+        id = baseId + "-v" + i;
+        i += 1;
+      }
+      return id;
+    }
+
+    function collectExistingBulletIds(tb) {
+      const ids = new Set();
+      const exps = (tb && tb.experiences) ? tb.experiences : [];
+      exps.forEach(exp => {
+        (exp.bullets || []).forEach(b => {
+          if (b && b.id) ids.add(b.id);
+        });
+      });
+      return ids;
+    }
+
+    function getTodayIsoDate() {
+      const now = new Date();
+      const yyyy = String(now.getFullYear());
+      const mm = String(now.getMonth() + 1).padStart(2, "0");
+      const dd = String(now.getDate()).padStart(2, "0");
+      return `${yyyy}-${mm}-${dd}`;
+    }
+
+    function recalcMetadata(tb) {
+      if (!tb || !tb.experiences || !Array.isArray(tb.experiences)) return;
+
+      let totalBullets = 0;
+      tb.experiences.forEach(exp => {
+        const bulletCount = (exp && Array.isArray(exp.bullets)) ? exp.bullets.length : 0;
+        totalBullets += bulletCount;
+      });
+
+      if (!tb.metadata || typeof tb.metadata !== "object") {
+        tb.metadata = {};
+      }
+
+      tb.metadata.lastUpdated = getTodayIsoDate();
+      tb.metadata.totalRoles = tb.experiences.length;
+      tb.metadata.totalBullets = totalBullets;
+
+      if (!tb.metadata.defaultVersion) {
+        tb.metadata.defaultVersion = "base";
+      }
+    }
+
+    function refreshMetaSummary() {
+      const el = document.getElementById("metaSummary");
+      if (!truthBank) {
+        el.textContent = "";
+        return;
+      }
+
+      const md = truthBank.metadata || {};
+      const roles = md.totalRoles !== undefined ? md.totalRoles : "n/a";
+      const bullets = md.totalBullets !== undefined ? md.totalBullets : "n/a";
+      const updated = md.lastUpdated ? md.lastUpdated : "n/a";
+
+      el.innerHTML = `Metadata: <code class="inline">roles=${roles}</code> <code class="inline">bullets=${bullets}</code> <code class="inline">lastUpdated=${updated}</code>`;
+    }
+
+    function refreshJobSelect() {
+      const sel = document.getElementById("jobSelect");
+      sel.innerHTML = "";
+      const exps = truthBank && truthBank.experiences ? truthBank.experiences : [];
+      exps.forEach((exp, idx) => {
+        const opt = document.createElement("option");
+        opt.value = String(idx);
+        opt.textContent = `${exp.company} | ${exp.title} | ${exp.dates}`;
+        sel.appendChild(opt);
+      });
+    }
+
+    function refreshBulletsView() {
+      const list = document.getElementById("existingBullets");
+      list.innerHTML = "";
+
+      if (!truthBank || !truthBank.experiences || truthBank.experiences.length === 0) return;
+
+      const idx = Number(document.getElementById("jobSelect").value || 0);
+      const exp = truthBank.experiences[idx];
+      if (!exp) return;
+
+      const bullets = exp.bullets || [];
+      bullets.forEach(b => {
+        const li = document.createElement("li");
+        li.textContent = safeText(b.text);
+        list.appendChild(li);
+      });
+    }
+
+    function refreshJsonOutput() {
+      document.getElementById("jsonOutput").value = JSON.stringify(truthBank, null, 2);
+    }
+
+    function downloadJson(filenameBase, obj) {
+      const now = new Date();
+      const pad = (n) => String(n).padStart(2, "0");
+      const ts = now.getFullYear()
+        + pad(now.getMonth() + 1)
+        + pad(now.getDate())
+        + "_"
+        + pad(now.getHours())
+        + pad(now.getMinutes())
+        + pad(now.getSeconds());
+
+      const filename = `${filenameBase}_${ts}.json`;
+
+      const blob = new Blob([JSON.stringify(obj, null, 2)], { type: "application/json;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+
+      URL.revokeObjectURL(url);
+    }
+
+    function setError(msg) {
+      document.getElementById("errorBox").textContent = msg || "";
+    }
+
+    document.getElementById("filePicker").addEventListener("change", async (ev) => {
+      const file = ev.target.files && ev.target.files[0];
+      if (!file) return;
+
+      try {
+        const text = await file.text();
+        truthBank = JSON.parse(text);
+
+        if (!truthBank.experiences || !Array.isArray(truthBank.experiences)) {
+          setError("This JSON does not look like a truth bank. Missing experiences[].");
+          truthBank = null;
+          return;
+        }
+
+        recalcMetadata(truthBank);
+
+        setError("");
+        refreshJobSelect();
+        refreshBulletsView();
+        refreshMetaSummary();
+        refreshJsonOutput();
+      } catch (e) {
+        truthBank = null;
+        setError("Could not load JSON: " + e.message);
+      }
+    });
+
+    document.getElementById("jobSelect").addEventListener("change", () => {
+      if (!truthBank) return;
+      refreshBulletsView();
+    });
+
+    document.getElementById("addBulletBtn").addEventListener("click", () => {
+      if (!truthBank) {
+        setError("Load a truth bank JSON first.");
+        return;
+      }
+
+      const bulletText = safeText(document.getElementById("bulletText").value).trim();
+      if (!bulletText) {
+        setError("Bullet text is required.");
+        return;
+      }
+
+      const tagsRaw = safeText(document.getElementById("bulletTags").value);
+      const tags = tagsRaw.split(",").map(s => s.trim()).filter(Boolean);
+
+      const impactLevel = document.getElementById("impactLevel").value;
+      const version = safeText(document.getElementById("version").value).trim() || "bank";
+      const verified = !!document.getElementById("verified").checked;
+
+      const idx = Number(document.getElementById("jobSelect").value || 0);
+      const exp = truthBank.experiences[idx];
+      if (!exp) {
+        setError("Selected job not found. Reload the file and try again.");
+        return;
+      }
+      if (!exp.bullets) exp.bullets = [];
+
+      const existingIds = collectExistingBulletIds(truthBank);
+      const baseId = slugify(`${exp.company}-${exp.title}-${bulletText.split(" ").slice(0, 4).join(" ")}`);
+      const id = makeUniqueId(baseId, existingIds);
+
+      exp.bullets.push({
+        id: id,
+        text: bulletText,
+        tags: tags,
+        impactLevel: impactLevel,
+        version: version,
+        verified: verified
+      });
+
+      recalcMetadata(truthBank);
+
+      document.getElementById("bulletText").value = "";
+      document.getElementById("bulletTags").value = "";
+      setError("");
+
+      refreshBulletsView();
+      refreshMetaSummary();
+      refreshJsonOutput();
+    });
+
+    document.getElementById("downloadBtn").addEventListener("click", () => {
+      if (!truthBank) {
+        setError("Load a truth bank JSON first.");
+        return;
+      }
+
+      recalcMetadata(truthBank);
+      refreshMetaSummary();
+      refreshJsonOutput();
+
+      downloadJson("truthBankUpdated", truthBank);
+    });
+  </script>
+</body>
+</html>
